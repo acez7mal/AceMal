@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Me - A Maze of Love 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffd4e5 0%, #c7b3ff 50%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            background: linear-gradient(180deg, rgba(255,212,229,0.9) 0%, rgba(199,179,255,0.9) 100%);
+            padding: 60px 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            animation: bounceIn 1s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #ff1493;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .emoji-decor {
+            font-size: 3em;
+            margin: 20px 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        p {
+            font-size: 1.3em;
+            color: #333;
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(255,20,147,0.4);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255,20,147,0.6);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Game Screen */
+        .game-screen {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+        }
+
+        .game-title {
+            font-size: 2em;
+            color: #ff1493;
+            margin-bottom: 20px;
+        }
+
+        #gameCanvas {
+            border: 3px solid #ff69b4;
+            background: linear-gradient(to bottom, #e0f7ff, #f0e6ff);
+            border-radius: 15px;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .controls {
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        .mobile-controls {
+            display: none;
+            margin-top: 20px;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .arrow-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5em;
+            padding: 0;
+        }
+
+        /* End Screen */
+        .end-screen {
+            max-width: 700px;
+        }
+
+        .kiss-scene {
+            font-size: 5em;
+            margin: 40px 0;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .love-card {
+            background: linear-gradient(135deg, #ffb6d9 0%, #ff69b4 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px 0;
+            box-shadow: 0 15px 40px rgba(255,20,147,0.3);
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .love-card h2 {
+            color: white;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .love-card p {
+            color: white;
+            font-size: 1.3em;
+            font-style: italic;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .cuddling-cats {
+            font-size: 4em;
+            margin: 30px 0;
+            animation: wiggle 0.6s ease-in-out infinite;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        .final-message {
+            font-size: 1.4em;
+            color: #ff1493;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            p { font-size: 1em; }
+            button { padding: 12px 30px; font-size: 1em; }
+            #gameCanvas { max-width: 100%; }
+            .mobile-controls { display: flex; }
+        }
+
+        .decorative-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .decorative-char {
+            position: fixed;
+            font-size: 4em;
+            animation: drift 20s infinite linear;
+        }
+
+        @keyframes drift {
+            0% { transform: translateX(-100%) translateY(-100%); }
+            100% { transform: translateX(120vw) translateY(100vh); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorative elements -->
+    <div class="decorative-char" style="left: 5%; top: 10%; animation-delay: 0s;">🌷</div>
+    <div class="decorative-char" style="left: 15%; top: 20%; animation-delay: 2s;">🐰</div>
+    <div class="decorative-char" style="left: 80%; top: 15%; animation-delay: 4s;">🐱</div>
+    <div class="decorative-char" style="left: 70%; top: 60%; animation-delay: 6s;">🐼</div>
+
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="screen welcome-screen active">
+            <h1>💕 Find Me 💕</h1>
+            <p>A Maze of Love</p>
+            <div class="emoji-decor">🌷 🐰 🐱 🐼</div>
+            <p>Hi Manahil! 💚</p>
+            <p>I know you're not feeling well, but I want to cheer you up with a little game. Help me find my way through this magical maze to reach you.</p>
+            <p>Your character awaits! Complete the maze and receive a special message. 🎮✨</p>
+            <p style="color: #ff1493; font-weight: bold;">Use arrow keys or WASD to move</p>
+            <button onclick="startGame()">Start Game 🎮</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="screen game-screen" id="gameScreen">
+            <h2 class="game-title">🎮 Find Ace Through The Maze! 🎮</h2>
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            <div class="controls">
+                <p>🎀 Use Arrow Keys or WASD to move 🎀</p>
+                <p>🌷 Find Ace at the end of the maze! 🌷</p>
+            </div>
+            <div class="mobile-controls" id="mobileControls">
+                <button class="arrow-btn" onclick="movePlayer(-1, 0)">⬅️</button>
+                <button class="arrow-btn" onclick="movePlayer(0, -1)">⬆️</button>
+                <button class="arrow-btn" onclick="movePlayer(0, 1)">⬇️</button>
+                <button class="arrow-btn" onclick="movePlayer(1, 0)">➡️</button>
+            </div>
+        </div>
+
+        <!-- End Screen -->
+        <div class="screen" id="endScreen">
+            <div class="kiss-scene">👩‍❤️‍👨</div>
+            <h1>You Found Me! 💕</h1>
+            
+            <div class="love-card">
+                <h2>From Ace 💚</h2>
+                <p>
+                    "I love you baby, get well soon.<br>
+                    You've got this! 💪✨"
+                </p>
+            </div>
+
+            <p style="font-size: 1.5em; margin: 30px 0;">Two hearts, one love 💕</p>
+            <div class="cuddling-cats">🐱💕🐱</div>
+            <p class="final-message">Because you deserve all the love and cuddles in the world. Feel better soon, beautiful! 🌈✨</p>
+            <button onclick="location.reload()">Play Again 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game variables
+        const CELL_SIZE = 40;
+        const COLS = canvas.width / CELL_SIZE;
+        const ROWS = canvas.height / CELL_SIZE;
+        const DECORATIONS = ['🌷', '🐰', '🐱', '🐼', '🌸', '🌹', '💐'];
+
+        let maze = [];
+        let playerPos = { x: 1, y: 1 };
+        let acePos = { x: COLS - 2, y: ROWS - 2 };
+        let gameWon = false;
+        let cellDecorations = {};
+
+        // Keyboard state
+        const keys = {};
+
+        // Event listeners
+        window.addEventListener('keydown', (e) => {
+            keys[e.key.toLowerCase()] = true;
+            handleMovement();
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys[e.key.toLowerCase()] = false;
+        });
+
+        function handleMovement() {
+            let newX = playerPos.x;
+            let newY = playerPos.y;
+
+            if (keys['arrowup'] || keys['w']) newY--;
+            if (keys['arrowdown'] || keys['s']) newY++;
+            if (keys['arrowleft'] || keys['a']) newX--;
+            if (keys['arrowright'] || keys['d']) newX++;
+
+            movePlayer(newX - playerPos.x, newY - playerPos.y);
+        }
+
+        function movePlayer(dx, dy) {
+            let newX = playerPos.x + dx;
+            let newY = playerPos.y + dy;
+
+            if (newX >= 0 && newX < COLS && newY >= 0 && newY < ROWS && !maze[newY][newX]) {
+                playerPos.x = newX;
+                playerPos.y = newY;
+
+                if (playerPos.x === acePos.x && playerPos.y === acePos.y) {
+                    winGame();
+                }
+            }
+        }
+
+        function generateMaze() {
+            maze = Array(ROWS).fill().map(() => Array(COLS).fill(1));
+
+            // Simple recursive backtracking maze generation
+            function carve(x, y) {
+                maze[y][x] = 0;
+                const directions = [[0, -2], [2, 0], [0, 2], [-2, 0]].sort(() => Math.random() - 0.5);
+
+                for (let [dx, dy] of directions) {
+                    const nx = x + dx, ny = y + dy;
+                    if (nx > 0 && nx < COLS - 1 && ny > 0 && ny < ROWS - 1 && maze[ny][nx]) {
+                        maze[y + dy / 2][x + dx / 2] = 0;
+                        carve(nx, ny);
+                    }
+                }
+            }
+
+            carve(1, 1);
+            maze[1][1] = 0;
+            maze[acePos.y][acePos.x] = 0;
+
+            // Add decorations to random open spaces
+            for (let y = 0; y < ROWS; y++) {
+                for (let x = 0; x < COLS; x++) {
+                    if (!maze[y][x] && !(x === playerPos.x && y === playerPos.y) && !(x === acePos.x && y === acePos.y)) {
+                        if (Math.random() < 0.15) {
+                            cellDecorations[`${x},${y}`] = DECORATIONS[Math.floor(Math.random() * DECORATIONS.length)];
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawMaze() {
+            ctx.fillStyle = '#f0e6ff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw maze walls
+            for (let y = 0; y < ROWS; y++) {
+                for (let x = 0; x < COLS; x++) {
+                    if (maze[y][x]) {
+                        ctx.fillStyle = '#9c27b0';
+                        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                    }
+                }
+            }
+
+            // Draw decorations
+            for (let coord in cellDecorations) {
+                const [x, y] = coord.split(',');
+                ctx.font = '30px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(cellDecorations[coord], parseInt(x) * CELL_SIZE + CELL_SIZE / 2, parseInt(y) * CELL_SIZE + CELL_SIZE / 2);
+            }
+
+            // Draw Ace (waiting at the end)
+            ctx.font = '35px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🧔', acePos.x * CELL_SIZE + CELL_SIZE / 2, acePos.y * CELL_SIZE + CELL_SIZE / 2);
+
+            // Draw player (Manahil)
+            ctx.font = '35px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🧕', playerPos.x * CELL_SIZE + CELL_SIZE / 2, playerPos.y * CELL_SIZE + CELL_SIZE / 2);
+        }
+
+        function winGame() {
+            gameWon = true;
+            document.getElementById('gameScreen').classList.remove('active');
+            document.getElementById('endScreen').classList.add('active');
+        }
+
+        function startGame() {
+            document.querySelector('.welcome-screen').classList.remove('active');
+            document.getElementById('gameScreen').classList.add('active');
+            generateMaze();
+            gameLoop();
+        }
+
+        function gameLoop() {
+            if (!gameWon) {
+                drawMaze();
+                requestAnimationFrame(gameLoop);
+            }
+        }
+    </script>
+</body>
+</html>
